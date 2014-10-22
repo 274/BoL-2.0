@@ -129,6 +129,7 @@ function Combo()
 
             elseif tdis < player:range() and Qready then 
                 player:CastSpell(0)
+            end
 
         elseif menu.Combo:Value() then
             if tdis < GetRange() and Eready then 
@@ -138,6 +139,7 @@ function Combo()
         elseif menu.laneclearkey:IsPressed() then
             if Qready then
             	player:CastSpell(0)
+            end
         end
     end
 end
