@@ -156,19 +156,6 @@ function Harass()
 	end
 end
 
-function CountEnemyHeroInRange(range,object)
-	object = object or myHero
-	range = range and range * range or myHero.range * myHero.range
-	local enemyInRange = 0
-	for i = 1, Game.HeroCount(), 1 do
-		local hero = Game.Hero(i)
-		if hero.team == TEAM_ENEMY and not hero.dead and GetDistanceSqr(object, hero) <= range then
-			enemyInRange = enemyInRange + 1
-		end
-	end
-	return enemyInRange
-end
-
 function GetDistanceSqr(v1, v2)
 	v2 = v2 or player
 	return (v1.x - v2.x) ^ 2 + ((v1.z or v1.y) - (v2.z or v2.y)) ^ 2
