@@ -8,10 +8,6 @@
  ----------------------------------------------------------------------------
 ]]
 
-
-local TS = TargetSelector(TargetSelector_Mode.LESS_CAST, TargetSelector_DamageType.MAGIC) 
-
-
 Callback.Bind('Load', function()
 
   Callback.Bind('GameStart', function() OnStart() end)
