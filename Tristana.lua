@@ -1,3 +1,14 @@
+--[[
+ ----------------------------------------------------------------------------
+ "THE BEER-WARE LICENSE" (Revision 42):
+ Greeny and fROMAGE wrote this file. As long as you retain this notice
+ you can do whatever you want with this stuff (exept sell it).
+ If we meet some day, and you think this stuff
+ is worth it, you can buy us a beer in return 
+ ----------------------------------------------------------------------------
+]]
+
+
 local TS = TargetSelector(TargetSelector_Mode.LESS_CAST, TargetSelector_DamageType.MAGIC) 
 
 
