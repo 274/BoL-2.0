@@ -1,15 +1,3 @@
---[[
-                                                          _         _ _ 
-    /\                                              /\   | |       | (_)
-   /  \__      _____  ___  ___  _ __ ___   ___     /  \  | | ____ _| |_ 
-  / /\ \ \ /\ / / _ \/ __|/ _ \| '_ ` _ \ / _ \   / /\ \ | |/ / _` | | |
- / ____ \ V  V /  __/\__ \ (_) | | | | | |  __/  / ____ \|   < (_| | | |
-/_/    \_\_/\_/ \___||___/\___/|_| |_| |_|\___| /_/    \_\_|\_\__,_|_|_|
-                                                                        
-AddOn for 2.0 by DeadDevil2
-]]
-
-
 local TS = TargetSelector(TargetSelector_Mode.LESS_CAST, TargetSelector_DamageType.MAGIC) 
 
 
@@ -59,16 +47,6 @@ function OnStart()
 		TheMenu.Items:Section("Advanced", "Advanced")  
 		TheMenu.Items:Boolean("usez", "Auto Zhonya's", true)
 		TheMenu.Items:Slider("hz", "Zhonya's if Health under -> %", 10, 0, 100)
-
-		TheMenu:Menu("Draw", "Draw Settings")
-		TheMenu.Draw:Boolean("Enable", "Enable Drawings", true)
-		TheMenu.Draw:Section("drawrange", "Draw Skill Range") 
-		TheMenu.Draw:Boolean("drawq", "Draw Q Range")
-		TheMenu.Draw:Boolean("draww", "Draw W Range")
-		TheMenu.Draw:Boolean("drawe", "Draw E Range")
-		TheMenu.Draw:Boolean("drawr", "Draw R Range")
-		TheMenu.Draw:DropDown("Colors", "Colors", 1, {"Red","Green","Blue","White"})
-		TheMenu.Draw:Icon('fa-pencil')
 
 		TheMenu:Section('Keys', 'Keys Selection')
 		TheMenu:KeyBinding('combokey', 'Combo', 'Space')
