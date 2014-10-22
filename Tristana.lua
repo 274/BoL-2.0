@@ -192,15 +192,18 @@ function Combo()
 
             elseif tdis < player:range and Qready then 
                 player:CastSpell(0)
-            
-        end
 
         elseif menu.Combo:Value() then
             if tdis < GetRange() and Eready then 
                 player:CastSpell(2, Target)
-        end
-end
+        	end
 
+        elseif menu.laneclearkey:IsPressed() then
+            if Qready then
+            	player:CastSpell(0)
+        end
+    end
+end
 
 function Harass()
 	if Tristana.harasskey:IsPressed() then
@@ -214,7 +217,6 @@ function Harass()
 		end
 	end
 end
-
 
 function CountEnemyHeroInRange(range,object)
 	object = object or myHero
@@ -360,7 +362,7 @@ function Autokill()
 end
 
 function OnDraw()
-	-- Thanks to Woody for this cool idea!
+	
 	if Tristana.Draw.Colors:Value() == 1 then 
 		Farbe = Color.Red
 	elseif Tristana.Draw.Colors:Value() == 2 then
