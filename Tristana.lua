@@ -127,7 +127,7 @@ function Combo()
             if tdis < GetRange() and Eready then 
                 player:CastSpell(2, Target)
 
-            elseif tdis < player:range and Qready then 
+            elseif tdis < player:range() and Qready then 
                 player:CastSpell(0)
 
         elseif menu.Combo:Value() then
