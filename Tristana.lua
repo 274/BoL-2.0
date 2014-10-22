@@ -19,7 +19,7 @@ Callback.Bind('Load', function()
 end)
 
 function OnStart()
-	if myHero.charName ~= 'Tristana' then return end
+	if player.charName ~= 'Tristana' then return end
 
 		TheMenu = MenuConfig("Tristana")
 		TheMenu:Icon("fa-user")
@@ -87,26 +87,26 @@ end
 
 function Checks()
 
-	Qready = myHero:CanUseSpell(0) == Game.SpellState.READY
-	Wready = myHero:CanUseSpell(1) == Game.SpellState.READY
-	Eready = myHero:CanUseSpell(2) == Game.SpellState.READY
-	Rready = myHero:CanUseSpell(3) == Game.SpellState.READY
+	Qready = player:CanUseSpell(0) == Game.SpellState.READY
+	Wready = player:CanUseSpell(1) == Game.SpellState.READY
+	Eready = player:CanUseSpell(2) == Game.SpellState.READY
+	Rready = player:CanUseSpell(3) == Game.SpellState.READY
 
 end
 
 function ValidTarget(Target)
-	return Target ~= nil and Target.type == myHero.type and Target.team == TEAM_ENEMY and not Target.dead and Target.visible and Target.health > 0 and Target.isTargetable
+	return Target ~= nil and Target.type == player.type and Target.team == TEAM_ENEMY and not Target.dead and Target.visible and Target.health > 0 and Target.isTargetable
 end
 
 function OnProcessSpell(unit, spell)
 	if unit.isMe and spell.name:find("Attack") then
-		animationTime = 1 / (spell.animationTime * myHero.attackSpeed)
-		windUpTime = 1 / (spell.windUpTime * myHero.attackSpeed)
+		animationTime = 1 / (spell.animationTime * player.attackSpeed)
+		windUpTime = 1 / (spell.windUpTime * player.attackSpeed)
 	end
 end
 
 function GetItemSlot(id, unit)
-	local unit = unit or myHero
+	local unit = unit or player
 	for i = 4, 9, 1 do
 		if unit:GetItem(i) and unit:GetItem(i).id == id then
 			return i
@@ -149,7 +149,7 @@ function Harass()
 		if ValidTarget(Target) then
 
 			if Tristana.Harass.useq:Value() and Allclass.GetDistance(Target) < 600 and Qready then
-			myHero:CastSpell(0, Target)
+			player:CastSpell(0, Target)
 			end
 
 		end
@@ -169,24 +169,24 @@ function Autokill()
 		
 		if heroDistance < 640000 and ValidTarget(hero) then
 
-			local qdmg = myHero:CalcMagicDamage(hero, (20*myHero:GetSpellData(0).level+15+.4*myHero.ap))
-			local edmg = myHero:CalcMagicDamage(hero, (25*myHero:GetSpellData(2).level+5+0.3*myHero.ap+0.6*myHero.totalDamage))
-			local rdmg = myHero:CalcMagicDamage(hero, (75*myHero:GetSpellData(3).level+25+.5*myHero.ap))
+			local qdmg = player:CalcMagicDamage(hero, (20*player:GetSpellData(0).level+15+.4*player.ap))
+			local edmg = player:CalcMagicDamage(hero, (25*player:GetSpellData(2).level+5+0.3*player.ap+0.6*player.totalDamage))
+			local rdmg = player:CalcMagicDamage(hero, (75*player:GetSpellData(3).level+25+.5*player.ap))
 
 			if Qready and hero.health < qdmg and heroDistance < 360000 and Tristana.Ks.useq:Value() then
-				myHero:CastSpell(0, hero)
+				player:CastSpell(0, hero)
 			
 
 			elseif Eready and hero.health < edmg and heroDistance < 105625 and Tristana.Ks.usee:Value() then
-				myHero:CastSpell(2, hero)
+				player:CastSpell(2, hero)
 			
 
 			elseif Rready and heroDistance < 640000 and Tristana.Ks.user:Value() then
 				if hero.health < rdmg then
-					myHero:CastSpell(3, hero)
+					player:CastSpell(3, hero)
 
 				elseif Eready and hero.health < (rdmg+edmg) and Tristana.Ks.usee:Value() then
-					myHero:CastSpell(3, hero)
+					player:CastSpell(3, hero)
 
 				end
 			end
@@ -207,17 +207,14 @@ function OnDraw()
 	end
 	
 	if Tristana.Draw.Enable:Value() then
-		if (Tristana.Draw.drawq:Value()) then
-			Graphics.DrawCircle(myHero, 600, Farbe)
-		end
 		if (Tristana.Draw.draww:Value()) then
-			Graphics.DrawCircle(myHero, 700, Farbe)
+			Graphics.DrawCircle(player, 900, Farbe)
 		end
 		if (Tristana.Draw.drawe:Value()) then
-			Graphics.DrawCircle(myHero, 325, Farbe)
+			Graphics.DrawCircle(player, GetRange(), Farbe)
 		end
 		if (Tristana.Draw.drawr:Value()) then
-			Graphics.DrawCircle(myHero, 800, Farbe)
+			Graphics.DrawCircle(player, GetRange(), Farbe)
 		end
 	end
 end
