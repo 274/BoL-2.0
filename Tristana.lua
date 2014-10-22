@@ -175,59 +175,30 @@ function Items()
 end
 
 
+function GetRange()
+{
+    return 541 + 9 * player.level;
+}
+
+
 function Combo()
+    if ValidTarget(Target) then
+        local tdis      = Allclass.GetDistance(Target)
+        local onlyeq    = menu.Combo.onlyeq:Value()
 
-	if ValidTarget(Target) then
+        if menu.combokey:IsPressed() then
+            if tdis < GetRange() and Eready then 
+                player:CastSpell(2, Target)
 
-	local tdis		=	Allclass.GetDistance(Target)
-	local onlyeq	=	Tristana.Combo.onlyeq:Value()
-	local hbuff 	=	TargetHasBuff(Target, "TristanaMota")
+            elseif tdis < player:range and Qready then 
+                player:CastSpell(0)
+            
+        end
 
-		if Tristana.combokey:IsPressed() and not Tristana.Combo.onlyriqe:Value() then
-
-			if Tristana.Combo.useq:Value() and tdis < 600 and Qready then 
-				myHero:CastSpell(0, Target)
-			
-
-			elseif Tristana.Combo.usee:Value() and tdis < 300 and Eready and not onlyeq then 
-				myHero:CastSpell(2)
-			
-
-			elseif Tristana.Combo.usee:Value() and tdis < 300 and Eready and onlyeq and hbuff then 
-				myHero:CastSpell(2)
-		
-
-			elseif Tristana.Combo.user:Value() and tdis < 800 and Rready then 
-				myHero:CastSpell(3, Target)
-			end
-
-		elseif Tristana.combokey:IsPressed() and Tristana.Combo.onlyriqe:Value() then
-
-			if (myHero.level < 6 or myHero:GetSpellData(0).currentCd < myHero:GetSpellData(3).currentCd) and Qready and tdis < 600 then
-				myHero:CastSpell(0, Target)
-			
-
-			elseif (myHero.level < 6 or myHero:GetSpellData(2).currentCd < myHero:GetSpellData(3).currentCd) and hbuff and onlyeq and Eready and tdis < 300 then
-				myHero:CastSpell(2)
-			
-
-			elseif (myHero.level < 6 or myHero:GetSpellData(2).currentCd < myHero:GetSpellData(3).currentCd) and not onlyeq and Eready and tdis < 300 then
-				myHero:CastSpell(2)
-			
-
-			elseif Rready and Qready and Eready and tdis < 800 then
-				myHero:CastSpell(3, Target)
-
-				if tdis < 600 then
-					myHero:CastSpell(0, Target)
-
-					if tdis < 300 and hbuff then
-						myHero:CastSpell(2)
-					end
-				end
-			end
-		end
-	end
+        elseif menu.Combo:Value() then
+            if tdis < GetRange() and Eready then 
+                player:CastSpell(2, Target)
+        end
 end
 
 
