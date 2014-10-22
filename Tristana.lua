@@ -115,9 +115,8 @@ function GetItemSlot(id, unit)
 end
 
 function GetRange()
-{
     return 541 + 9 * player.level;
-}
+end
 
 function Combo()
     if ValidTarget(Target) then
