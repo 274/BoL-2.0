@@ -53,13 +53,13 @@ function OnStart()
 		TheMenu.Items:Boolean("usebc", "Use Bilgewater Cutlass", true) 
 		TheMenu.Items:Section("Advanced", "Advanced")  
 		TheMenu.Items:Boolean("usez", "Auto Zhonya's", true)
-		TheMenu.Items:Slider("hz", "Zhonya's if Health under -> %", 10, 0, 100)
 
 		TheMenu:Section('Keys', 'Keys Selection')
 		TheMenu:KeyBinding('combokey', 'Combo', 'Space')
 		TheMenu:KeyBinding('harasskey', 'Harass', 'A')
 		TheMenu.harasskey:Toggle('Toggle-Mode')
 		TheMenu:KeyBinding('laneclearkey', 'Lane Clear', 'X')
+		TheMenu:DropDown("is_magic_or_physical", 'AD or AP', 1, {"AD", "AP"})
 
 	Callback.Bind('Tick', function() OnTick() end)
 	Callback.Bind('ProcessSpell', function(unit, spell) OnProcessSpell(unit, spell) end)
@@ -68,20 +68,41 @@ function OnStart()
 
 end
 
+function GetTarget(range, magic_or_physical)
+	local T = {Unit = nil, THP = 100000}
+	for i = 1, Game.HeroCount() do
+		local h = Game.Hero(i)
+		if h and h.valid and h.visible and not h.dead and h.isTargetable and h.team ~= myHero.team and h.pos:DistanceTo(myHero.pos) < myhero.range then
+			local THP = (h.health * (1 + ((magic_or_physical and h.magicArmor or h.armor) / 100)))
+			if THP < T.THP then	T.Unit, T.THP = h, THP end
+		end	
+	end
+	return T.Unit
+end
+
+
 function OnTick()
 
 	Checks()
 	Combo()
-	Orbwalk()
-	Autokill()
-
 	Harass()
-
-	AA()
+	LaneClear()
+	KS()
+	Items()
 
 end
 
 function Checks()
+
+	magic_or_physical = 0;
+	if TheMenu.is_magic_or_physical:Value() == 1 then
+		magic_or_physical = false
+	end
+	if TheMenu.is_magic_or_physical:Value() == 2 then
+		magic_or_physical = true
+	end
+
+	Target = GetTarget(GetRange(), magic_or_physical)
 
 	Qready = player:CanUseSpell(0) == Game.SpellState.READY
 	Wready = player:CanUseSpell(1) == Game.SpellState.READY
@@ -115,42 +136,67 @@ function GetRange()
 end
 
 function Combo()
-    if ValidTarget(Target) then
-        local tdis      = Allclass.GetDistance(Target)
-        local onlyeq    = menu.Combo.onlyeq:Value()
 
-        if menu.combokey:IsPressed() then
-            if tdis < GetRange() and Eready then 
-                player:CastSpell(2, Target)
+    if TheMenu.combokey:IsPressed() then
 
-            elseif tdis < player:range() and Qready then 
-                player:CastSpell(0)
-            end
+    	if ValidTarget(Target) then
 
-        elseif menu.Combo:Value() then
-            if tdis < GetRange() and Eready then 
-                player:CastSpell(2, Target)
-        	end
+			local target_distance = Allclass.GetDistance(Target)
 
-        elseif menu.laneclearkey:IsPressed() then
-            if Qready then
+            if target_distance < myhero.range and Qready then
             	player:CastSpell(0)
             end
+
+            if target_distance < GetRange() and Eready then 
+                player:CastSpell(2, Target)
+            end
+
         end
+
     end
+
 end
 
 function Harass()
+
 	if Tristana.harasskey:IsPressed() then
+
+	 	if ValidTarget(Target) then
+
+			local target_distance = Allclass.GetDistance(Target)
+
+        	if target_distance < GetRange() and Eready then
+                player:CastSpell(2, Target)
+            end
+
+        end
+
+	end
+
+end
+
+function LaneClear()
+
+	 if TheMenu.laneclearkey:IsPressed() then
 
 		if ValidTarget(Target) then
 
-			if Tristana.Harass.useq:Value() and Allclass.GetDistance(Target) < 600 and Qready then
-			player:CastSpell(0, Target)
-			end
+			local target_distance = Allclass.GetDistance(Target)
 
-		end
-	end
+            if Qready then
+            	player:CastSpell(0)
+            end
+
+        end
+
+    end
+
+end
+
+function KS()
+
+	
+
 end
 
 function GetDistanceSqr(v1, v2)
