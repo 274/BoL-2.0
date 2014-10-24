@@ -85,9 +85,12 @@ function OnTick()
 
 	Checks()
 	Combo()
+	Checks()
 	Harass()
 	LaneClear()
+	Checks()
 	KS()
+	Checks()
 	Items()
 
 end
@@ -115,22 +118,6 @@ function ValidTarget(Target)
 	return Target ~= nil and Target.type == player.type and Target.team == TEAM_ENEMY and not Target.dead and Target.visible and Target.health > 0 and Target.isTargetable
 end
 
-function OnProcessSpell(unit, spell)
-	if unit.isMe and spell.name:find("Attack") then
-		animationTime = 1 / (spell.animationTime * player.attackSpeed)
-		windUpTime = 1 / (spell.windUpTime * player.attackSpeed)
-	end
-end
-
-function GetItemSlot(id, unit)
-	local unit = unit or player
-	for i = 4, 9, 1 do
-		if unit:GetItem(i) and unit:GetItem(i).id == id then
-			return i
-		end
-	end
-end
-
 function GetRange()
     return 541 + 9 * player.level;
 end
@@ -150,11 +137,8 @@ function Combo()
             if target_distance < GetRange() and Eready then 
                 player:CastSpell(2, Target)
             end
-
         end
-
     end
-
 end
 
 function Harass()
@@ -168,11 +152,8 @@ function Harass()
         	if target_distance < GetRange() and Eready then
                 player:CastSpell(2, Target)
             end
-
         end
-
 	end
-
 end
 
 function LaneClear()
@@ -186,50 +167,42 @@ function LaneClear()
             if Qready then
             	player:CastSpell(0)
             end
-
         end
-
     end
-
 end
 
 function KS()
 
-	
+
 
 end
 
-function GetDistanceSqr(v1, v2)
-	v2 = v2 or player
-	return (v1.x - v2.x) ^ 2 + ((v1.z or v1.y) - (v2.z or v2.y)) ^ 2
-end
 
 function Autokill()
 	for i = 1, Game.HeroCount() do
-		hero = Game.Hero(i)
+		ennemi = Game.Hero(i)
 
-		local heroDistance = Allclass.GetDistanceSqr(hero)
+		local ennemiDistance = Allclass.GetDistanceSqr(ennemi)
 		
-		if heroDistance < 640000 and ValidTarget(hero) then
+		if ennemiDistance < GetRange() and ValidTarget(ennemi) then
 
-			local qdmg = player:CalcMagicDamage(hero, (20*player:GetSpellData(0).level+15+.4*player.ap))
-			local edmg = player:CalcMagicDamage(hero, (25*player:GetSpellData(2).level+5+0.3*player.ap+0.6*player.totalDamage))
-			local rdmg = player:CalcMagicDamage(hero, (75*player:GetSpellData(3).level+25+.5*player.ap))
+			local edmg = player:CalcMagicDamage(ennemi, (25*player:GetSpellData(2).level+5+0.3*player.ap+0.6*player.totalDamage))
+			local rdmg = player:CalcMagicDamage(ennemi, (75*player:GetSpellData(3).level+25+.5*player.ap))
 
-			if Qready and hero.health < qdmg and heroDistance < 360000 and Tristana.Ks.useq:Value() then
-				player:CastSpell(0, hero)
+			if Qready and ennemi.health < qdmg and ennemiDistance < 360000 and Tristana.Ks.useq:Value() then
+				player:CastSpell(0, ennemi)
 			
 
-			elseif Eready and hero.health < edmg and heroDistance < 105625 and Tristana.Ks.usee:Value() then
-				player:CastSpell(2, hero)
+			elseif Eready and ennemi.health < edmg and ennemiDistance < 105625 and Tristana.Ks.usee:Value() then
+				player:CastSpell(2, ennemi)
 			
 
-			elseif Rready and heroDistance < 640000 and Tristana.Ks.user:Value() then
-				if hero.health < rdmg then
-					player:CastSpell(3, hero)
+			elseif Rready and ennemiDistance < 640000 and Tristana.Ks.user:Value() then
+				if ennemi.health < rdmg then
+					player:CastSpell(3, ennemi)
 
-				elseif Eready and hero.health < (rdmg+edmg) and Tristana.Ks.usee:Value() then
-					player:CastSpell(3, hero)
+				elseif Eready and ennemi.health < (rdmg+edmg) and Tristana.Ks.usee:Value() then
+					player:CastSpell(3, ennemi)
 
 				end
 			end
