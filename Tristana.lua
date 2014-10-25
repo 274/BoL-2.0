@@ -173,12 +173,6 @@ end
 
 function KS()
 
-
-
-end
-
-
-function Autokill()
 	for i = 1, Game.HeroCount() do
 		ennemi = Game.Hero(i)
 
@@ -189,25 +183,24 @@ function Autokill()
 			local edmg = player:CalcMagicDamage(ennemi, (25*player:GetSpellData(2).level+5+0.3*player.ap+0.6*player.totalDamage))
 			local rdmg = player:CalcMagicDamage(ennemi, (75*player:GetSpellData(3).level+25+.5*player.ap))
 
-			if Qready and ennemi.health < qdmg and ennemiDistance < 360000 and Tristana.Ks.useq:Value() then
-				player:CastSpell(0, ennemi)
-			
-
-			elseif Eready and ennemi.health < edmg and ennemiDistance < 105625 and Tristana.Ks.usee:Value() then
+			if Eready and ennemi.health < edmg + 30 and ennemiDistance < GetRange() and Tristana.KS.usee:Value() then
 				player:CastSpell(2, ennemi)
-			
 
-			elseif Rready and ennemiDistance < 640000 and Tristana.Ks.user:Value() then
-				if ennemi.health < rdmg then
-					player:CastSpell(3, ennemi)
+			elseif Rready and ennemi.health < rdmg + 30 and ennemiDistance < GetRange() and Tristana.KS.user:Value() then
+				player:CastSpell(3, ennemi)
 
-				elseif Eready and ennemi.health < (rdmg+edmg) and Tristana.Ks.usee:Value() then
-					player:CastSpell(3, ennemi)
+			elseif Rready and Eready and ennemi.health < edmg + rdmg + 30 and ennemiDistance < GetRange() and Tristana.KS.user:Value() and Tristana.KS.usee:Value() then
+				player:CastSpell(2, ennemi)
+				player:CastSpell(3, ennemi)
 
-				end
 			end
 		end
 	end
+end
+
+
+function Autokill()
+
 end
 
 function OnDraw()
