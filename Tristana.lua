@@ -180,16 +180,16 @@ function KS()
 		
 		if ennemiDistance < GetRange() and ValidTarget(ennemi) then
 
-			local edmg = player:CalcMagicDamage(ennemi, (25*player:GetSpellData(2).level+5+0.3*player.ap+0.6*player.totalDamage))
-			local rdmg = player:CalcMagicDamage(ennemi, (75*player:GetSpellData(3).level+25+.5*player.ap))
+			local edmg = player:CalcMagicDamage(ennemi, 25 + 25 player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
+			local rdmg = player:CalcMagicDamage(ennemi, 200 + player:GetSpellData(3).level * 100 + 1.5 * player.ap)
 
-			if Eready and ennemi.health < edmg + 30 and ennemiDistance < GetRange() and Tristana.KS.usee:Value() then
+			if Eready and ennemi.health < edmg - 30 and ennemiDistance < GetRange() and Tristana.KS.usee:Value() then
 				player:CastSpell(2, ennemi)
 
-			elseif Rready and ennemi.health < rdmg + 30 and ennemiDistance < GetRange() and Tristana.KS.user:Value() then
+			elseif Rready and ennemi.health < rdmg - 30 and ennemiDistance < GetRange() and Tristana.KS.user:Value() then
 				player:CastSpell(3, ennemi)
 
-			elseif Rready and Eready and ennemi.health < edmg + rdmg + 30 and ennemiDistance < GetRange() and Tristana.KS.user:Value() and Tristana.KS.usee:Value() then
+			elseif Rready and Eready and ennemi.health < edmg + rdmg - 30 and ennemiDistance < GetRange() and Tristana.KS.user:Value() and Tristana.KS.usee:Value() then
 				player:CastSpell(2, ennemi)
 				player:CastSpell(3, ennemi)
 
@@ -197,6 +197,8 @@ function KS()
 		end
 	end
 end
+
+
 
 
 function Autokill()
