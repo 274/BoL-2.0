@@ -102,7 +102,7 @@ function Checks()
 		magic_or_physical = true
 	end
 
-	Target = GetTarget(GetRange(), magic_or_physical)
+	Target = GetTarget(player.range, magic_or_physical)
 
 	Qready = player:CanUseSpell(0) == Game.SpellState.READY
 	Wready = player:CanUseSpell(1) == Game.SpellState.READY
@@ -113,10 +113,6 @@ end
 
 function ValidTarget(Target)
 	return Target ~= nil and Target.type == player.type and Target.team == TEAM_ENEMY and not Target.dead and Target.visible and Target.health > 0 and Target.isTargetable
-end
-
-function GetRange()
-	return 541 + 9 * player.level;
 end
 
 function Combo()
@@ -145,7 +141,7 @@ function Harass()
 
 			local target_distance = Allclass.GetDistance(Target)
 
-			if target_distance < GetRange() and Eready then
+			if target_distance < player.range and Eready then
 				player:CastSpell(2, Target)
 				Eready = player:CanUseSpell(2) == Game.SpellState.READY
 			end
@@ -174,7 +170,7 @@ function KS()
 
 			local ennemiDistance = Allclass.GetDistanceSqr(ennemi)
 			
-			if ennemiDistance < GetRange() and ValidTarget(ennemi) then
+			if ennemiDistance < player.range and ValidTarget(ennemi) then
 
 				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 * player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
 				local rdmg = player:CalcMagicDamage(ennemi, 200 + player:GetSpellData(3).level * 100 + 1.5 * player.ap)
@@ -224,10 +220,10 @@ function OnDraw()
 			Graphics.DrawCircle(player, 900, Farbe)
 		end
 		if (Tristana.Draw.drawe:Value()) then
-			Graphics.DrawCircle(player, GetRange(), Farbe)
+			Graphics.DrawCircle(player, player.range, Farbe)
 		end
 		if (Tristana.Draw.drawr:Value()) then
-			Graphics.DrawCircle(player, GetRange(), Farbe)
+			Graphics.DrawCircle(player, player.range, Farbe)
 		end
 	end
 end ]]
