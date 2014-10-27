@@ -63,7 +63,6 @@ function OnStart()
 		TheMenu:DropDown("is_magic_or_physical", 'AD or AP', 1, {"AD", "AP"})
 
 	Callback.Bind('Tick', function() OnTick() end)
-	Callback.Bind('ProcessSpell', function(unit, spell) OnProcessSpell(unit, spell) end)
 
 	Game.Chat.Print("<font color=\"#F5F5F5\">[Tristana] by me (me ! remember ??) loaded! </font>")
 
