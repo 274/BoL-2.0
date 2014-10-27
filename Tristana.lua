@@ -139,11 +139,11 @@ function Harass()
 
 	 	if ValidTarget(Target) then
 
-			--local target_distance = Allclass.GetDistance(Target)
+			local target_distance = Allclass.GetDistance(Target)
 
-			if CanCastSpell(2, Target) then
+			if target_distance < player.range and Eready then
 				player:CastSpell(2, Target)
-				Eready = player:CanUseSpell(2) == Game.SpellState.READY
+				Eready = false
 			end
 		end
 	end
@@ -156,8 +156,7 @@ function LaneClear()
 
 		if Qready then
 			player:CastSpell(0)
-			Qready = player:CanUseSpell(0) == Game.SpellState.READY
-		end
+			Qready = false
 	end
 end
 
@@ -193,8 +192,7 @@ function KS()
 end
 
 function CanCastSpell(spell, target)
-	target = target or Target
-	if player:CanUseSpell(spell) == Game.SpellState.READY and Allclass.GetDistance(target) < player:GetSpellData(spell).range then
+	if player:CanUseSpell(spell) == Game.SpellState.READY and player:DistanceTo(target) < player:GetSpellData(spell).range then
 		return true
 	else 
 		return false
