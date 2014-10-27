@@ -175,7 +175,7 @@ end
 
 function KS()
 
-	if TheMenu.kskey:Value()
+	if TheMenu.kskey:Value() then
 
 		for i = 1, Game.HeroCount() do
 			ennemi = Game.Hero(i)
