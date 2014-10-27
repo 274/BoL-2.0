@@ -141,7 +141,7 @@ function Harass()
 
 			--local target_distance = Allclass.GetDistance(Target)
 
-			if CanCastSpell(2) then
+			if CanCastSpell(2, Target) then
 				player:CastSpell(2, Target)
 				Eready = player:CanUseSpell(2) == Game.SpellState.READY
 			end
@@ -193,6 +193,7 @@ function KS()
 end
 
 function CanCastSpell(spell, target)
+	target = target or Target
 	if player:CanUseSpell(spell) == Game.SpellState.READY and Allclass.GetDistance(target) < player:GetSpellData(spell).range then
 		return true
 	else 
