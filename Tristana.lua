@@ -55,12 +55,13 @@ function OnStart()
 		TheMenu.Items:Boolean("usez", "Auto Zhonya's", true) ]]
 
 		TheMenu:Section('Keys', 'Keys Selection')
-		TheMenu:KeyBinding('combokey', 'Combo', 'Space')
+		TheMenu:KeyBinding('combokey', 'Combo', 'V')
 		TheMenu:KeyBinding('harasskey', 'Harass', 'A')
 		TheMenu.harasskey:Toggle('Toggle-Mode')
 		TheMenu:Boolean('kskey', 'KS', true)
 		TheMenu:KeyBinding('laneclearkey', 'Lane Clear', 'X')
 		TheMenu:DropDown("is_magic_or_physical", 'AD or AP', 1, {"AD", "AP"})
+
 
 	Callback.Bind('Tick', function() OnTick() end)
 
@@ -72,7 +73,7 @@ function GetTarget(range, magic_or_physical)
 	local T = {Unit = nil, THP = 100000}
 	for i = 1, Game.HeroCount() do
 		local h = Game.Hero(i)
-		if h and h.valid and h.visible and not h.dead and h.isTargetable and h.team ~= myHero.team and h.pos:DistanceTo(myHero.pos) < myhero.range then
+		if h and h.valid and h.visible and not h.dead and h.isTargetable and h.team ~= myHero.team and h.pos:DistanceTo(myHero.pos) < player.range then
 			local THP = (h.health * (1 + ((magic_or_physical and h.magicArmor or h.armor) / 100)))
 			if THP < T.THP then	T.Unit, T.THP = h, THP end
 		end	
@@ -121,8 +122,11 @@ end
 function Combo()
 
 	if TheMenu.combokey:IsPressed() then
+			 		Game.Chat.Print("<font color=\"#F5F5F5\">combo </font>")
+
 
 		if ValidTarget(Target) then
+				Game.Chat.Print("<font color=\"#F5F5F5\">combo - valid target</font>")
 
 			local target_distance = Allclass.GetDistance(Target)
 
@@ -142,6 +146,7 @@ end
 function Harass()
 
 	if TheMenu.harasskey:IsPressed() then
+			 		Game.Chat.Print("<font color=\"#F5F5F5\">harass </font>")
 
 	 	if ValidTarget(Target) then
 
@@ -158,15 +163,11 @@ end
 function LaneClear()
 
 	 if TheMenu.laneclearkey:IsPressed() then
+	 		Game.Chat.Print("<font color=\"#F5F5F5\">Lane Clear </font>")
 
-		if ValidTarget(Target) then
-
-			local target_distance = Allclass.GetDistance(Target)
-
-			if Qready then
-				player:CastSpell(0)
-				Qready = player:CanUseSpell(0) == Game.SpellState.READY
-			end
+		if Qready then
+			player:CastSpell(0)
+			Qready = player:CanUseSpell(0) == Game.SpellState.READY
 		end
 	end
 end
