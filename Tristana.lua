@@ -184,7 +184,7 @@ function KS()
 			
 			if ennemiDistance < GetRange() and ValidTarget(ennemi) then
 
-				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
+				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 * player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
 				local rdmg = player:CalcMagicDamage(ennemi, 200 + player:GetSpellData(3).level * 100 + 1.5 * player.ap)
 
 				if canCastSpell(2, ennemi) and ennemi.health < edmg - 30 and TheMenu.KS.usee:Value() then
