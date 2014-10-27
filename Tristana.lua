@@ -166,28 +166,26 @@ function KS()
 	if TheMenu.kskey:Value() then
 
 		for i = 1, Game.HeroCount() do
-			ennemi = Game.Hero(i)
 
-			local ennemiDistance = Allclass.GetDistanceSqr(ennemi)
-			
-			if ennemiDistance < player.range and ValidTarget(ennemi) then
+			ennemi = Game.Hero(i)
+			if ValidTarget(ennemi) and player:distanceTo(ennemi) < player.range then
 
 				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 * player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
-				local rdmg = player:CalcMagicDamage(ennemi, 200 + player:GetSpellData(3).level * 100 + 1.5 * player.ap)
+				local rdmg = player:CalcMagicDamage(ennemi, 200 + 100 * player:GetSpellData(3).level + 1.5 * player.ap)
 
-				if canCastSpell(2, ennemi) and ennemi.health < edmg - 30 and TheMenu.KS.usee:Value() then
+				if Eready and ennemi.health < edmg - 30 and TheMenu.KS.usee:Value() then
 					player:CastSpell(2, ennemi)
-					Eready = player:CanUseSpell(2) == Game.SpellState.READY
+					Eready = false
 
-				elseif canCastSpell(3, ennemi) and ennemi.health < rdmg - 30 and TheMenu.KS.user:Value() then
+				elseif Rready and ennemi.health < rdmg - 30 and TheMenu.KS.user:Value() then
 					player:CastSpell(3, ennemi)
-					Rready = player:CanUseSpell(3) == Game.SpellState.READY
+					Rready = false
 
-				elseif canCastSpell(2, ennemi) and canCastSpell(3, ennemi) and ennemi.health < edmg + rdmg - 30 and TheMenu.KS.user:Value() and TheMenu.KS.usee:Value() then
+				elseif Eready and Rready and ennemi.health < edmg + rdmg - 30 and TheMenu.KS.user:Value() and TheMenu.KS.usee:Value() then
 					player:CastSpell(2, ennemi)
 					player:CastSpell(3, ennemi)
-					Eready = player:CanUseSpell(2) == Game.SpellState.READY
-					Rready = player:CanUseSpell(3) == Game.SpellState.READY
+					Eready = false
+					Rready = false
 				end
 			end
 		end
