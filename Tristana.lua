@@ -85,11 +85,10 @@ end
 function OnTick()
 
 	Checks()
+	KS()
 	Combo()
 	Harass()
 	LaneClear()
-	KS()
-	Items()
 
 end
 
@@ -209,7 +208,7 @@ end
 function CanCastSpell(spell, target)
 	if player:CanUseSpell(spell) == Game.SpellState.READY and player:DistanceTo(target) < player:GetSpellData(spell).range then
 		return true
-	else
+	else 
 		return false
 	end
 end
