@@ -122,22 +122,15 @@ end
 function Combo()
 
 	if TheMenu.combokey:IsPressed() then
-			 		Game.Chat.Print("<font color=\"#F5F5F5\">combo </font>")
-
-
 		if ValidTarget(Target) then
-				Game.Chat.Print("<font color=\"#F5F5F5\">combo - valid target</font>")
-
-			local target_distance = Allclass.GetDistance(Target)
-
-			if target_distance < myhero.range and Qready then
+			if player:distanceTo(target) < player.range and Qready then
 				player:CastSpell(0)
-				Qready = player:CanUseSpell(0) == Game.SpellState.READY
+				Qready = false
 			end
 
-			if target_distance < GetRange() and Eready then 
+			if player:distanceTo(target) < player.range and Eready then 
 				player:CastSpell(2, Target)
-				Eready = player:CanUseSpell(2) == Game.SpellState.READY
+				Eready = false
 			end
 		end
 	end
