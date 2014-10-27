@@ -44,7 +44,7 @@ function OnStart()
 		TheMenu.KS.usee:Note("I recommend you to turn it to true only if you're playing AP Tristana.")
 		TheMenu.KS:Boolean("user", "Use R", true)
 
-		TheMenu:Menu("Items", "Item Settings")
+--[[		TheMenu:Menu("Items", "Item Settings")
 		TheMenu.Items:Icon("fa-folder-o")
 		TheMenu.Items:Section("Item Settings", "Item Settings")
 		TheMenu.Items:Boolean("usedfg", "Use Deathfire Grasp", true)
@@ -52,12 +52,13 @@ function OnStart()
 		TheMenu.Items:Boolean("usehg", "Use Hextech Gunblade", true)
 		TheMenu.Items:Boolean("usebc", "Use Bilgewater Cutlass", true) 
 		TheMenu.Items:Section("Advanced", "Advanced")  
-		TheMenu.Items:Boolean("usez", "Auto Zhonya's", true)
+		TheMenu.Items:Boolean("usez", "Auto Zhonya's", true) ]]
 
 		TheMenu:Section('Keys', 'Keys Selection')
 		TheMenu:KeyBinding('combokey', 'Combo', 'Space')
 		TheMenu:KeyBinding('harasskey', 'Harass', 'A')
 		TheMenu.harasskey:Toggle('Toggle-Mode')
+		TheMenu:Boolean('kskey', 'KS', true)
 		TheMenu:KeyBinding('laneclearkey', 'Lane Clear', 'X')
 		TheMenu:DropDown("is_magic_or_physical", 'AD or AP', 1, {"AD", "AP"})
 
@@ -85,12 +86,9 @@ function OnTick()
 
 	Checks()
 	Combo()
-	Checks()
 	Harass()
 	LaneClear()
-	Checks()
 	KS()
-	Checks()
 	Items()
 
 end
@@ -119,40 +117,43 @@ function ValidTarget(Target)
 end
 
 function GetRange()
-    return 541 + 9 * player.level;
+	return 541 + 9 * player.level;
 end
 
 function Combo()
 
-    if TheMenu.combokey:IsPressed() then
+	if TheMenu.combokey:IsPressed() then
 
-    	if ValidTarget(Target) then
+		if ValidTarget(Target) then
 
 			local target_distance = Allclass.GetDistance(Target)
 
-            if target_distance < myhero.range and Qready then
-            	player:CastSpell(0)
-            end
+			if target_distance < myhero.range and Qready then
+				player:CastSpell(0)
+				Qready = player:CanUseSpell(0) == Game.SpellState.READY
+			end
 
-            if target_distance < GetRange() and Eready then 
-                player:CastSpell(2, Target)
-            end
-        end
-    end
+			if target_distance < GetRange() and Eready then 
+				player:CastSpell(2, Target)
+				Eready = player:CanUseSpell(2) == Game.SpellState.READY
+			end
+		end
+	end
 end
 
 function Harass()
 
-	if Tristana.harasskey:IsPressed() then
+	if TheMenu.harasskey:IsPressed() then
 
 	 	if ValidTarget(Target) then
 
 			local target_distance = Allclass.GetDistance(Target)
 
-        	if target_distance < GetRange() and Eready then
-                player:CastSpell(2, Target)
-            end
-        end
+			if target_distance < GetRange() and Eready then
+				player:CastSpell(2, Target)
+				Eready = player:CanUseSpell(2) == Game.SpellState.READY
+			end
+		end
 	end
 end
 
@@ -164,52 +165,56 @@ function LaneClear()
 
 			local target_distance = Allclass.GetDistance(Target)
 
-            if Qready then
-            	player:CastSpell(0)
-            end
-        end
-    end
+			if Qready then
+				player:CastSpell(0)
+				Qready = player:CanUseSpell(0) == Game.SpellState.READY
+			end
+		end
+	end
 end
 
 function KS()
 
-	for i = 1, Game.HeroCount() do
-		ennemi = Game.Hero(i)
+	if TheMenu.kskey:Value()
 
-		local ennemiDistance = Allclass.GetDistanceSqr(ennemi)
-		
-		if ennemiDistance < GetRange() and ValidTarget(ennemi) then
+		for i = 1, Game.HeroCount() do
+			ennemi = Game.Hero(i)
 
-			local edmg = player:CalcMagicDamage(ennemi, 25 + 25 player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
-			local rdmg = player:CalcMagicDamage(ennemi, 200 + player:GetSpellData(3).level * 100 + 1.5 * player.ap)
+			local ennemiDistance = Allclass.GetDistanceSqr(ennemi)
+			
+			if ennemiDistance < GetRange() and ValidTarget(ennemi) then
 
-			if canCastSpell(2, ennemi) and ennemi.health < edmg - 30 and Tristana.KS.usee:Value() then
-				player:CastSpell(2, ennemi)
+				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
+				local rdmg = player:CalcMagicDamage(ennemi, 200 + player:GetSpellData(3).level * 100 + 1.5 * player.ap)
 
-			elseif canCastSpell(3, ennemi) and ennemi.health < rdmg - 30 and Tristana.KS.user:Value() then
-				player:CastSpell(3, ennemi)
+				if canCastSpell(2, ennemi) and ennemi.health < edmg - 30 and TheMenu.KS.usee:Value() then
+					player:CastSpell(2, ennemi)
+					Eready = player:CanUseSpell(2) == Game.SpellState.READY
 
-			elseif canCastSpell(2, ennemi) and canCastSpell(3, ennemi) and ennemi.health < edmg + rdmg - 30 and Tristana.KS.user:Value() and Tristana.KS.usee:Value() then
-				player:CastSpell(2, ennemi)
-				player:CastSpell(3, ennemi)
+				elseif canCastSpell(3, ennemi) and ennemi.health < rdmg - 30 and TheMenu.KS.user:Value() then
+					player:CastSpell(3, ennemi)
+					Rready = player:CanUseSpell(3) == Game.SpellState.READY
+
+				elseif canCastSpell(2, ennemi) and canCastSpell(3, ennemi) and ennemi.health < edmg + rdmg - 30 and TheMenu.KS.user:Value() and TheMenu.KS.usee:Value() then
+					player:CastSpell(2, ennemi)
+					player:CastSpell(3, ennemi)
+					Eready = player:CanUseSpell(2) == Game.SpellState.READY
+					Rready = player:CanUseSpell(3) == Game.SpellState.READY
+				end
 			end
 		end
 	end
 end
 
 function CanCastSpell(spell, target)
-	if player:CanUseSpell(spell) == Game.SpellState.READY && player:DistanceTo(target) < player:GetSpellData(spell).range
+	if player:CanUseSpell(spell) == Game.SpellState.READY and player:DistanceTo(target) < player:GetSpellData(spell).range
 		return true
 	else
 		return false
 	end
 end
 
-
-function Autokill()
-
-end
-
+--[[
 function OnDraw()
 	
 	if Tristana.Draw.Colors:Value() == 1 then 
@@ -233,4 +238,4 @@ function OnDraw()
 			Graphics.DrawCircle(player, GetRange(), Farbe)
 		end
 	end
-end
+end ]]
