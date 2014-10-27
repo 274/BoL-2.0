@@ -119,12 +119,15 @@ function Combo()
 
 	if TheMenu.combokey:IsPressed() then
 		if ValidTarget(Target) then
-			if player:distanceTo(target) < player.range and Qready then
+			
+			local target_distance = Allclass.GetDistance(Target)
+
+			if target_distance < player.range and Qready then
 				player:CastSpell(0)
 				Qready = false
 			end
 
-			if player:distanceTo(target) < player.range and Eready then 
+			if target_distance < player.range and Eready then 
 				player:CastSpell(2, Target)
 				Eready = false
 			end
@@ -157,6 +160,7 @@ function LaneClear()
 		if Qready then
 			player:CastSpell(0)
 			Qready = false
+		end
 	end
 end
 
