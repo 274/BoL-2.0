@@ -68,6 +68,7 @@ function OnStart()
 
 
 	Callback.Bind('Tick', function() OnTick() end)
+	Callback.Bind('Draw', function() OnDraw() end)
 
 	Game.Chat.Print("<font color=\"#F5F5F5\">[Tristana] by me (me ! remember ??) loaded! </font>")
 
