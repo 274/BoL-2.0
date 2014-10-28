@@ -15,15 +15,16 @@ Callback.Bind('Load', function()
 end)
 
 function OnStart()
-	if player.charName ~= 'Tristana' then return end
+	if player.charName ~= 'Ryze' then return end
 
-		TheMenu = MenuConfig("Tristana")
+		TheMenu = MenuConfig("Ryze")
 		TheMenu:Icon("fa-user")
 
 		TheMenu:Menu("Combo", "Combo Settings")
 		TheMenu.Combo:Icon("fa-folder-o")
 		TheMenu.Combo:Section("Combo Settings", "Combo Settings")
 		TheMenu.Combo:Boolean("useq", "Use Q", true)
+		TheMenu.Combo:Boolean("usew", "Use W", true)
 		TheMenu.Combo:Boolean("usee", "Use E", true)
 		TheMenu.Combo:Boolean("user", "Use R", true)
 
@@ -41,7 +42,7 @@ function OnStart()
 		TheMenu.KS:Icon("fa-folder-o")
 		TheMenu.KS:Section("KS Settings", "KS Settings")
 		TheMenu.KS:Boolean("usee", "Use E", false)
-		TheMenu.KS.usee:Note("I recommend you to turn it to true only if you're playing AP Tristana.")
+		TheMenu.KS.usee:Note("I recommend you to turn it to true only if you're playing AP Ryze.")
 		TheMenu.KS:Boolean("user", "Use R", true)
 
 		TheMenu:Menu("draw", "Draw")
@@ -65,7 +66,7 @@ function OnStart()
 	Callback.Bind('Tick', function() OnTick() end)
 	Callback.Bind('Draw', function() OnDraw() end)
 
-	Game.Chat.Print("<font color=\"#F5F5F5\">[Tristana] by me (me ! remember ??) loaded! </font>")
+	Game.Chat.Print("<font color=\"#F5F5F5\">[Ryze] by me (me ! remember ??) loaded! </font>")
 
 end
 
