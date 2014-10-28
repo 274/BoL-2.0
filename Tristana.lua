@@ -223,6 +223,8 @@ function OnDraw()
 
 	if TheMenu.draw.draww:Value() then
 		Graphics.DrawCircle(player, myHero:GetSpellData(0).range, CircleColor)
+	end
+	
 	if TheMenu.draw.drawrange:Value() then
 		Graphics.DrawCircle(player, player.range, CircleColor)
 	end
