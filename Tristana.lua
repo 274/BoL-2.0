@@ -67,6 +67,13 @@ function OnStart()
 
 	Game.Chat.Print("<font color=\"#F5F5F5\">[Tristana] by me (me ! remember ??) loaded! </font>")
 
+	Color = { Red = Graphics.ARGB(0xFF,0xFF,0,0),
+			  Green = Graphics.ARGB(0xFF,0,0xFF,0),
+			  Blue = Graphics.ARGB(0xFF,0,0,0xFF),
+			  White = Graphics.ARGB(0xFF,0xFF,0xFF,0xFF),
+			  Yellow = Graphics.ARGB(0xFF,0xFF,0xFF,0)
+			}
+
 end
 
 function GetTarget(range, magic_or_physical)
@@ -171,7 +178,10 @@ function KS()
 		for i = 1, Game.HeroCount() do
 
 			ennemi = Game.Hero(i)
-			if ValidTarget(ennemi) and player:distanceTo(ennemi) < player.range then
+
+			local ennemi_distance = Allclass.GetDistance(ennemi)
+
+			if ValidTarget(ennemi) and ennemi_distance < player.range then
 
 				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 * player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
 				local rdmg = player:CalcMagicDamage(ennemi, 200 + 100 * player:GetSpellData(3).level + 1.5 * player.ap)
@@ -208,9 +218,9 @@ function OnDraw()
 	
 	if TheMenu.combokey:IsPressed() then
 		CircleColor = Color.Red
-	else if TheMenu.harasskey:IsPressed() then
+	elseif TheMenu.harasskey:IsPressed() then
 		CircleColor = Color.Yellow
-	else if TheMenu.laneclearkey:IsPressed() then
+	elseif TheMenu.laneclearkey:IsPressed() then
 		CircleColor = Color.Green
 	else
 		CircleColor = Color.White
