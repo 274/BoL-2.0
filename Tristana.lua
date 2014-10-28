@@ -44,6 +44,10 @@ function OnStart()
 		TheMenu.KS.usee:Note("I recommend you to turn it to true only if you're playing AP Tristana.")
 		TheMenu.KS:Boolean("user", "Use R", true)
 
+		TheMenu:Menu("draw", "Draw")
+		TheMenu.draw:Boolean("drawrange", "Draw Range ?", true)
+		TheMenu.draw:Boolean("draww", "Draw W Range ?", true)
+
 --[[		TheMenu:Menu("Items", "Item Settings")
 		TheMenu.Items:Icon("fa-folder-o")
 		TheMenu.Items:Section("Item Settings", "Item Settings")
@@ -203,28 +207,22 @@ function CanCastSpell(spell, target)
 	end
 end
 
---[[
+
 function OnDraw()
 	
-	if Tristana.Draw.Colors:Value() == 1 then 
-		Farbe = Color.Red
-	elseif Tristana.Draw.Colors:Value() == 2 then
-		Farbe = Color.Green
-	elseif Tristana.Draw.Colors:Value() == 3 then
-		Farbe = Color.Blue
-	elseif Tristana.Draw.Colors:Value() == 4 then
-		Farbe = Color.White
+	if TheMenu.combokey:IsPressed() then
+		CircleColor = Color.Red
+	else if TheMenu.harasskey:IsPressed() then
+		CircleColor = Color.Yellow
+	else if TheMenu.laneclearkey:IsPressed() then
+		CircleColor = Color.Green
+	else
+		CircleColor = Color.White
 	end
-	
-	if Tristana.Draw.Enable:Value() then
-		if (Tristana.Draw.draww:Value()) then
-			Graphics.DrawCircle(player, 900, Farbe)
-		end
-		if (Tristana.Draw.drawe:Value()) then
-			Graphics.DrawCircle(player, player.range, Farbe)
-		end
-		if (Tristana.Draw.drawr:Value()) then
-			Graphics.DrawCircle(player, player.range, Farbe)
-		end
+
+	if TheMenu.draw.draww:Value() then
+		Graphics.DrawCircle(player, myHero:GetSpellData(0).range, CircleColor)
+	if TheMenu.draw.drawrange:Value() then
+		Graphics.DrawCircle(player, player.range, CircleColor)
 	end
-end ]]
+end 
