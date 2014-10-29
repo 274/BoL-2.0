@@ -3,9 +3,13 @@ stack	= {}
 pc		= 1 -- program counter
 sc		= 0 -- stack counter
 
+--prog = "[[]"
+
 prog = ">++++++++[<+++++++++>-]<.>>+>+>++>[-]+<[>[->+<<++++>]<<]>.+++++++..+++.>>+++++++.<<<[[-]<[-]>]<+++++++++++++++.>>.+++.------.--------.>>+.>++++." --temp
 
---prog = "[+]."
+--prog = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
+
+--prog = "+[>+[>+]>]<.<.<."
 
 fackulua = 418
 
@@ -34,7 +38,7 @@ function Run()
 		local c = prog:sub(i, i)
 
 		if c == '.' then
-			print(memory[pc])
+			io.write(string.char(memory[pc]))
 		elseif c == ',' then
 			memory[pc] = io.read(1)
 		elseif c == '>' then
@@ -52,17 +56,18 @@ function Run()
 			if memory[pc] == 0 then
 				i = SkipBlock(i) - 1
 				if i == -42 then
-					return "PATATE"
+					return "PATATE" -- Error
 				end
+			else
+				sc = sc + 1
+				stack[sc] = i
 			end
-			sc = sc + 1
-			stack[sc] = pc
 		elseif c == ']' then
-			i = stack[sc]
-			sc = sc
-			if sc < 0 then
-				return
+			if sc <= 0 then
+				return -- Error
 			end
+			i = stack[sc] - 1
+			sc = sc - 1
 		end
 		i = i + 1
 	end
