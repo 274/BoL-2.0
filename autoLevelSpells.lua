@@ -7,6 +7,7 @@
  
         Dont forget to check the abilitySequence of your champion
         Thanks to Zynox and PedobearIGER who gave grey some ideas and tipps.
+        Thanks to Jorj for the callback (will make YOU gain FPS, so thx him !!)
 ]]
 
 
@@ -179,7 +180,9 @@ function OnStart()
 
 
 
-    Callback.Bind('Tick', function() OnTick() end)
+--    Callback.Bind('Tick', function() OnTick() end)
+    Callback.Bind("RecvPacket", function() OnRecvPacket() end)
+
 
     Game.Chat.Print("<font color=\"#F5F5F5\">[AutoLevelSpell] by grey loaded! </font>")
 
@@ -188,7 +191,22 @@ end
  
 
 --[[            Functions       ]]
-function OnTick()
+
+-- Thx to Jorj for this callback <3
+
+function OnRecvPacket(p)
+    if p.header == 0x3F then
+        p.pos = 1
+        local sourceNetworkId = p:Decode4()
+        local level = p:Decode1()
+        local pointsAvailable = p:Decode1()
+
+        OnLevelUp()
+
+    end
+end
+
+function OnLevelUp()
 
     if TheMenu.m_or_a:Value() == "Automatique" and forcemanual == false then
 
