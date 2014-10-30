@@ -57,7 +57,7 @@ function OnStart()
 		TheMenu.Items:Boolean("usedfg", "Use Deathfire Grasp", true) ]]
 
 		TheMenu:Section('Keys', 'Keys Selection')
-		TheMenu:KeyBinding('combokey', 'Combo', 'V')
+		TheMenu:KeyBinding('combokey', 'Combo', 'SPACE')
 		TheMenu:KeyBinding('harasskey', 'Harass', 'A')
 		TheMenu.harasskey:Toggle('Toggle-Mode')
 		TheMenu:Boolean('kskey', 'KS', true)
