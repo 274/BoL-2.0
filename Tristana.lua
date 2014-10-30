@@ -8,6 +8,9 @@
  ----------------------------------------------------------------------------
 ]]
 
+
+-- Version : 1.0.0.42
+
 Callback.Bind('Load', function()
 
   Callback.Bind('GameStart', function() OnStart() end)
