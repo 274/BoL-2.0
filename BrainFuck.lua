@@ -1,17 +1,31 @@
-memory 	= {0, 0, 0, 0}
-stack	= {}
-pc		= 1 -- program counter
-sc		= 0 -- stack counter
+Callback.Bind('Load', function()
 
---prog = "[[]"
+  Callback.Bind('GameStart', function() OnStart() end)
+  Callback.Bind('RecvChat', function(from, msg) OnChatMessage(from, msg) end)
+end)
 
-prog = ">++++++++[<+++++++++>-]<.>>+>+>++>[-]+<[>[->+<<++++>]<<]>.+++++++..+++.>>+++++++.<<<[[-]<[-]>]<+++++++++++++++.>>.+++.------.--------.>>+.>++++." --temp
+function OnStart()
+	menu = MenuConfig("Brainfuck")
 
---prog = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
+	menu:Section('Brainfuck', 'Brainfuck')
+	menu:Boolean('Enable', 'Enable', true)
+	menu:Boolean('Local', 'Output to local chat', true)
+end
 
---prog = "+[>+[>+]>]<.<.<."
+function OnChatMessage(from, msg)
+	if (menu.Enable:Value() or string.starts(msg, "/bf")) then
+		print(msg)
+		Run(msg)
+		if (menu.Local:Value()) then
+			Game.Chat.Block()
+		end
+	end
+end
 
-fackulua = 418
+function string.starts(String,Start)
+   return string.sub(String,1,string.len(Start))==Start
+end
+
 
 function SkipBlock(i)
 	local tmp = 0
@@ -31,14 +45,14 @@ function SkipBlock(i)
 	return -42
 end
 
-function Run()
+function Run(prog)
 	local i = 1
 
 	while i <= #prog do
 		local c = prog:sub(i, i)
 
 		if c == '.' then
-			io.write(string.char(memory[pc]))
+			Game.Chat.Send(string.char(memory[pc]))
 		elseif c == ',' then
 			memory[pc] = io.read(1)
 		elseif c == '>' then
@@ -73,7 +87,7 @@ function Run()
 	end
 end
 
-if fackulua == 418 then
-	fackulua = 404
-	Run()
-end
+memory 	= {0, 0, 0, 0}
+stack	= {}
+pc		= 1 -- program counter
+sc		= 0 -- stack counter
