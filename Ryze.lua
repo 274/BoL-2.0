@@ -8,11 +8,21 @@
  ----------------------------------------------------------------------------
 ]]
 
+
+-- Version : 1.0.0.42
+
 Callback.Bind('Load', function()
 
   Callback.Bind('GameStart', function() OnStart() end)
 
 end)
+
+-- Global --
+
+local g_Qrange = myHero:GetSpellData(0).range
+local g_Wrange = myHero:GetSpellData(1).range
+local g_Erange = myHero:GetSpellData(2).range
+
 
 function OnStart()
 	if player.charName ~= 'Ryze' then return end
@@ -24,30 +34,32 @@ function OnStart()
 		TheMenu.Combo:Icon("fa-folder-o")
 		TheMenu.Combo:Section("Combo Settings", "Combo Settings")
 		TheMenu.Combo:Boolean("useq", "Use Q", true)
-		TheMenu.Combo:Boolean("usew", "Use W", true)
 		TheMenu.Combo:Boolean("usee", "Use E", true)
+		TheMenu.Combo:Boolean("usew", "Use W", true)
 		TheMenu.Combo:Boolean("user", "Use R", true)
 
 		TheMenu:Menu("Harass", "Harass Settings")
 		TheMenu.Harass:Icon("fa-folder-o")
 		TheMenu.Harass:Section("Harass Settings", "Harass Settings")  
+		TheMenu.Harass:Boolean("useq", "Use Q", true)
 		TheMenu.Harass:Boolean("usee", "Use E", true)
 
-		TheMenu:Menu("LaneClear", "Lane Clear Settings")
+	--[[	TheMenu:Menu("LaneClear", "Lane Clear Settings")
 		TheMenu.LaneClear:Icon("fa-folder-o")
 		TheMenu.LaneClear:Section("LaneClear Settings", "Lane Clear Settings")  
-		TheMenu.LaneClear:Boolean("useq", "Use Q", false)
+		TheMenu.LaneClear:Boolean("useq", "Use Q", false) ]]
 
 		TheMenu:Menu("KS", "KS Settings")
 		TheMenu.KS:Icon("fa-folder-o")
 		TheMenu.KS:Section("KS Settings", "KS Settings")
-		TheMenu.KS:Boolean("usee", "Use E", false)
-		TheMenu.KS.usee:Note("I recommend you to turn it to true only if you're playing AP Ryze.")
-		TheMenu.KS:Boolean("user", "Use R", true)
+		TheMenu.KS:Boolean("useq", "Use Q", true)
+		TheMenu.KS:Boolean("usee", "Use E", true)
 
 		TheMenu:Menu("draw", "Draw")
 		TheMenu.draw:Boolean("drawrange", "Draw Range ?", true)
-		TheMenu.draw:Boolean("draww", "Draw W Range ?", true)
+		TheMenu.draw:Boolean("drawq", "Draw Q Range ?", true)
+		TheMenu.draw:Boolean("drawwe", "Draw W and E Range ?", true)
+
 
 --[[		TheMenu:Menu("Items", "Item Settings")
 		TheMenu.Items:Icon("fa-folder-o")
@@ -55,12 +67,11 @@ function OnStart()
 		TheMenu.Items:Boolean("usedfg", "Use Deathfire Grasp", true) ]]
 
 		TheMenu:Section('Keys', 'Keys Selection')
-		TheMenu:KeyBinding('combokey', 'Combo', 'V')
+		TheMenu:KeyBinding('combokey', 'Combo', 'SPACE')
 		TheMenu:KeyBinding('harasskey', 'Harass', 'A')
 		TheMenu.harasskey:Toggle('Toggle-Mode')
 		TheMenu:Boolean('kskey', 'KS', true)
-		TheMenu:KeyBinding('laneclearkey', 'Lane Clear', 'X')
-		TheMenu:DropDown("is_magic_or_physical", 'AD or AP', 1, {"AD", "AP"})
+--		TheMenu:KeyBinding('laneclearkey', 'Lane Clear', 'X')
 
 
 	Callback.Bind('Tick', function() OnTick() end)
@@ -68,14 +79,21 @@ function OnStart()
 
 	Game.Chat.Print("<font color=\"#F5F5F5\">[Ryze] by me (me ! remember ??) loaded! </font>")
 
+	Color = { Red = Graphics.ARGB(0xFF,0xFF,0,0),
+			  Green = Graphics.ARGB(0xFF,0,0xFF,0),
+			  Blue = Graphics.ARGB(0xFF,0,0,0xFF),
+			  White = Graphics.ARGB(0xFF,0xFF,0xFF,0xFF),
+			  Yellow = Graphics.ARGB(0xFF,0xFF,0xFF,0)
+			}
+
 end
 
-function GetTarget(range, magic_or_physical)
+function GetTarget(range, physical)
 	local T = {Unit = nil, THP = 100000}
 	for i = 1, Game.HeroCount() do
 		local h = Game.Hero(i)
 		if h and h.valid and h.visible and not h.dead and h.isTargetable and h.team ~= myHero.team and h.pos:DistanceTo(myHero.pos) < player.range then
-			local THP = (h.health * (1 + ((magic_or_physical and h.magicArmor or h.armor) / 100)))
+			local THP = (h.health * (1 + ((physical and h.magicArmor or h.armor) / 100)))
 			if THP < T.THP then	T.Unit, T.THP = h, THP end
 		end	
 	end
@@ -89,21 +107,15 @@ function OnTick()
 	KS()
 	Combo()
 	Harass()
-	LaneClear()
+--	LaneClear()
 
 end
 
 function Checks()
 
-	magic_or_physical = 0;
-	if TheMenu.is_magic_or_physical:Value() == 1 then
-		magic_or_physical = false
-	end
-	if TheMenu.is_magic_or_physical:Value() == 2 then
-		magic_or_physical = true
-	end
+	physical = false
 
-	Target = GetTarget(player.range, magic_or_physical)
+	Target = GetTarget(player.range, physical)
 
 	Qready = player:CanUseSpell(0) == Game.SpellState.READY
 	Wready = player:CanUseSpell(1) == Game.SpellState.READY
@@ -123,12 +135,12 @@ function Combo()
 			
 			local target_distance = Allclass.GetDistance(Target)
 
-			if target_distance < player.range and Qready then
-				player:CastSpell(0)
+			if target_distance < g_Qrange and Qready then
+				player:CastSpell(0, Target)
 				Qready = false
 			end
 
-			if target_distance < player.range and Eready then 
+			if target_distance < g_Erange and Eready then 
 				player:CastSpell(2, Target)
 				Eready = false
 			end
@@ -172,7 +184,10 @@ function KS()
 		for i = 1, Game.HeroCount() do
 
 			ennemi = Game.Hero(i)
-			if ValidTarget(ennemi) and player:distanceTo(ennemi) < player.range then
+
+			local ennemi_distance = Allclass.GetDistance(ennemi)
+
+			if ValidTarget(ennemi) and ennemi_distance < player.range then
 
 				local edmg = player:CalcMagicDamage(ennemi, 25 + 25 * player:GetSpellData(2).level + 0.25 * player.ap) -- burst dmg only
 				local rdmg = player:CalcMagicDamage(ennemi, 200 + 100 * player:GetSpellData(3).level + 1.5 * player.ap)
@@ -209,16 +224,16 @@ function OnDraw()
 	
 	if TheMenu.combokey:IsPressed() then
 		CircleColor = Color.Red
-	else if TheMenu.harasskey:IsPressed() then
+	elseif TheMenu.harasskey:IsPressed() then
 		CircleColor = Color.Yellow
-	else if TheMenu.laneclearkey:IsPressed() then
+	elseif TheMenu.laneclearkey:IsPressed() then
 		CircleColor = Color.Green
 	else
 		CircleColor = Color.White
 	end
 
 	if TheMenu.draw.draww:Value() then
-		Graphics.DrawCircle(player, myHero:GetSpellData(0).range, CircleColor)
+		Graphics.DrawCircle(player, myHero:GetSpellData(1).range, CircleColor)
 	end
 
 	if TheMenu.draw.drawrange:Value() then
