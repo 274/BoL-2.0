@@ -1,3 +1,18 @@
+--[[
+ ----------------------------------------------------------------------------
+ "THE BEER-WARE LICENSE" (Revision 42):
+ Green Death and fROMAGE wrote this file. As long as you retain this 
+ notice you can do whatever you want with this stuff (exept sell it).
+ If we meet some day, and you think this stuff
+ is worth it, you can buy us a beer in return 
+ ----------------------------------------------------------------------------
+]]
+
+
+-- Version : 1.0.0.42
+
+
+
 Callback.Bind('Load', function()
 
   Callback.Bind('GameStart', function() OnStart() end)
@@ -21,7 +36,7 @@ function OnStart()
 	menu:Section('Brainfuck', 'Brainfuck')
 	menu:Boolean('Enable', 'Enable', true)
 	menu:Boolean('Local', 'Output to local chat', true)
-	menu:Slider('Watchdog', 'Infinite loop protection', 1000, 100, 314, 4242)
+	menu:Slider('Watchdog', 'Infinite loop protection', 1000, 100, 4242, 42)
 end
 
 function OnChatMessage(from, msg)
